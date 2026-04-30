@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_demo/uI/demos/7_testing/calculator_manager.dart';
+import 'package:flutter_demo/ui/demos/7_testing/calculator_manager.dart';
 
 class CalculatorDemo extends StatefulWidget {
   const CalculatorDemo({super.key});

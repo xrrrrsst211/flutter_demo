@@ -1,4 +1,4 @@
-mport 'dart:math' as math;
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
@@ -127,7 +127,7 @@ class _PaintingDemoState extends State<PaintingDemo> {
             final canvasSize = math.min(
               isWide ? constraints.maxWidth * 0.58 : constraints.maxWidth - 32,
               isWide ? constraints.maxHeight - 48 : 390,
-            ).clamp(280.0, 560.0);
+            ).clamp(280.0, 560.0).toDouble();
 
             final curveArea = Card(
               elevation: 2,
@@ -348,7 +348,7 @@ class BezierPainter extends CustomPainter {
 
   void _drawGrid(Canvas canvas, Size size) {
     final gridPaint = Paint()
-      ..color = colorScheme.outlineVariant.withOpacity(0.45)
+      ..color = colorScheme.outlineVariant.withValues(alpha: 0.45)
       ..strokeWidth = 1;
 
     const step = 40.0;
@@ -412,7 +412,7 @@ class BezierPainter extends CustomPainter {
     bool selected,
   ) {
     final shadowPaint = Paint()
-      ..color = Colors.black.withOpacity(0.16)
+      ..color = Colors.black.withValues(alpha: 0.16)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
 
     canvas.drawCircle(point.translate(0, 2), selected ? 17 : 14, shadowPaint);
@@ -453,7 +453,7 @@ class BezierPainter extends CustomPainter {
       const Radius.circular(8),
     );
 
-    canvas.drawRRect(labelBackground, Paint()..color = Colors.white.withOpacity(0.86));
+    canvas.drawRRect(labelBackground, Paint()..color = Colors.white.withValues(alpha: 0.86));
     textPainter.paint(canvas, labelOffset);
   }
 

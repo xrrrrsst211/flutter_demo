@@ -1,20 +1,25 @@
 import 'dart:developer';
-import 'dart:io';
 
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_demo/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_demo/firebase_options.dart';
 
 class Auth {
+  bool _initialized = false;
+
   Future<void> init() async {
-    if (!Platform.isAndroid) return;
+    if (_initialized) return;
+
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    _initialized = true;
   }
 
   Future<bool> login({required String email, required String password}) async {
     try {
+      await init();
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
@@ -28,6 +33,7 @@ class Auth {
 
   Future<bool> signup({required String email, required String password}) async {
     try {
+      await init();
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
@@ -40,10 +46,14 @@ class Auth {
   }
 
   Future<void> logout() async {
+    await init();
     await FirebaseAuth.instance.signOut();
   }
 
   bool isLoggedIn() {
-    return FirebaseAuth.instance.currentUser != null;
+    if (kIsWeb || _initialized) {
+      return FirebaseAuth.instance.currentUser != null;
+    }
+    return false;
   }
 }

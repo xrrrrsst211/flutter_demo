@@ -1,36 +1,51 @@
-import 'package:drift/drift.dart';
-import 'package:drift_flutter/drift_flutter.dart';
+class DatabaseHelper {
+  static const table = 'people';
+  static const columnId = 'id';
+  static const columnName = 'name';
+  static const columnAge = 'age';
 
-part 'database.g.dart';
+  final List<Map<String, Object?>> _rows = [];
+  int _nextId = 1;
 
-class MyTable extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  TextColumn get name => text()();
-  IntColumn get age => integer()();
-}
+  Future<void> init() async {
+    // In-memory demo storage. It keeps the same API used by sqlite_demo.dart,
+    // so the lesson screen works without generated Drift files.
+  }
 
-@DriftDatabase(tables: [MyTable])
-class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(_openConnection());
+  Future<int> insert(Map<String, Object?> row) async {
+    final id = row[columnId] is int ? row[columnId] as int : _nextId++;
+    final newRow = <String, Object?>{
+      columnId: id,
+      columnName: row[columnName] ?? '',
+      columnAge: row[columnAge] ?? 0,
+    };
+    _rows.removeWhere((item) => item[columnId] == id);
+    _rows.add(newRow);
+    return id;
+  }
 
-  @override
-  int get schemaVersion => 1;
+  Future<List<Map<String, Object?>>> queryAllRows() async {
+    return List<Map<String, Object?>>.from(_rows);
+  }
 
-  Future<int> insertRow(MyTableCompanion row) => into(myTable).insert(row);
-  Future<List<MyTableData>> queryAllRows() => select(myTable).get();
-  Future<bool> updateRow(MyTableData row) => update(myTable).replace(row);
-  Future<int> deleteRow(int id) =>
-      (delete(myTable)..where((t) => t.id.equals(id))).go();
-}
+  Future<int> update(Map<String, Object?> row) async {
+    final id = row[columnId];
+    if (id == null) return 0;
 
-QueryExecutor _openConnection() {
-  return driftDatabase(
-    name: 'my_app_db',
-    // You MUST provide DriftWebOptions for the web to work.
-    // It is safely ignored when running on Android/iOS.
-    web: DriftWebOptions(
-      sqlite3Wasm: Uri.parse('sqlite3.wasm'),
-      driftWorker: Uri.parse('drift_worker.js'),
-    ),
-  );
+    final index = _rows.indexWhere((item) => item[columnId] == id);
+    if (index == -1) return 0;
+
+    _rows[index] = <String, Object?>{
+      columnId: id,
+      columnName: row[columnName] ?? _rows[index][columnName],
+      columnAge: row[columnAge] ?? _rows[index][columnAge],
+    };
+    return 1;
+  }
+
+  Future<int> delete(int id) async {
+    final before = _rows.length;
+    _rows.removeWhere((item) => item[columnId] == id);
+    return before - _rows.length;
+  }
 }

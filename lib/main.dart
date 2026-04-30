@@ -12,6 +12,8 @@ import 'package:flutter_demo/ui/demos/6_networking/networking_demo.dart';
 import 'package:flutter_demo/ui/demos/7_testing/calculator_demo.dart';
 import 'package:flutter_demo/ui/demos/8_profiling/profiling_demo.dart';
 import 'package:flutter_demo/ui/demos/9_painting/painting_demo.dart';
+import 'package:flutter_demo/ui/demos/10_audio/audio_demo.dart';
+import 'package:flutter_demo/ui/demos/11_streaming_audio/streaming_audio_demo.dart';
 import 'package:flutter_demo/ui/settings/settings_screen.dart';
 import 'ui/demos/1_dart/dart_demo_screen.dart';
 
@@ -186,6 +188,30 @@ class HomeScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const PaintingDemo()),
+              );
+            },
+          ),
+
+          ListTile(
+            title: const Text("10. Audio clips"),
+            leading: const Icon(Icons.volume_up),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AudioDemo()),
+              );
+            },
+          ),
+
+          ListTile(
+            title: const Text("11. Streaming audio"),
+            leading: const Icon(Icons.podcasts),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const StreamingAudioDemo(),
+                ),
               );
             },
           ),
